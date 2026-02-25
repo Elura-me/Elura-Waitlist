@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# Elura Waitlist
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Elura helps beauty artists stop chasing clients and start getting booked.
 
-Currently, two official plugins are available:
+This project is the early-access waitlist experience for artists who want a cleaner, more professional way to get discovered and booked.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## What Elura Is
+Elura is designed for beauty professionals who want:
+- A premium portfolio presence
+- More consistent direct bookings
+- Better trust with clients
+- Less dependence on chaotic DM workflows
 
-## React Compiler
+## Why Join Early
+Waitlist members get first access as features roll out.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Early access is focused on artists who are serious about:
+- Presenting their work professionally
+- Growing booking quality, not just volume
+- Building a long-term, premium personal brand
 
-## Expanding the ESLint configuration
+## Who It’s For
+- Makeup artists
+- Beauty service professionals
+- Artists currently booking mostly through social platforms and referrals
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Waitlist Flow
+Users submit:
+- Name
+- Email
+- Optional Instagram handle
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+After submission, they are added to the early-access list and contacted when access opens.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Local Preview
+```bash
+npm install
+npm run server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Open `http://localhost:5173`.

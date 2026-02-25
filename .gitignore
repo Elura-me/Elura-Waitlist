@@ -25,3 +25,10 @@ dist-ssr
 
 # Waitlist exports
 data/waitlist.csv
+
+# Internal docs (do not push)
+brandGuidlines.md
+brandguidlines.md
+system design.md
+sytem design.md
+System Design.md
