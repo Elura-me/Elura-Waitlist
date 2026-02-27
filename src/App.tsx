@@ -1,13 +1,24 @@
+import { lazy, Suspense } from 'react';
 import { Hero } from './components/Hero';
 import { Solution } from './components/Solution';
 import { Form } from './components/Form';
-import { EluraAgent } from './components/EluraAgent';
-import { BackgroundEffect } from './components/BackgroundEffect';
+
+const BackgroundEffect = lazy(async () => {
+  const module = await import('./components/BackgroundEffect');
+  return { default: module.BackgroundEffect };
+});
+
+const EluraAgent = lazy(async () => {
+  const module = await import('./components/EluraAgent');
+  return { default: module.EluraAgent };
+});
 
 function App() {
   return (
     <div style={{ position: 'relative', minHeight: '100vh', isolation: 'isolate' }}>
-      <BackgroundEffect />
+      <Suspense fallback={null}>
+        <BackgroundEffect />
+      </Suspense>
       <div style={{
         position: 'fixed',
         top: '1.35rem',
@@ -37,7 +48,9 @@ function App() {
         <p>&copy; {new Date().getFullYear()} <span className="elura-mark" style={{ fontSize: '1.15rem' }}>Elura.</span> All rights reserved.</p>
       </footer>
 
-      <EluraAgent />
+      <Suspense fallback={null}>
+        <EluraAgent />
+      </Suspense>
     </div>
   );
 }
