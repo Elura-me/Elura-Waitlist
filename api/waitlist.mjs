@@ -3,14 +3,64 @@ import { Redis } from '@upstash/redis';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const MAX_BODY_SIZE = 1_000_000;
 const WAITLIST_KEY = process.env.WAITLIST_KEY || 'waitlist:entries';
-const REDIS_REST_URL = process.env.KV_REST_API_URL;
-const REDIS_REST_TOKEN = process.env.KV_REST_API_TOKEN;
-const HAS_REDIS_CONFIG = Boolean(REDIS_REST_URL && REDIS_REST_TOKEN);
 
-const redis = HAS_REDIS_CONFIG
+function normalizeEnv(value) {
+    if (typeof value !== 'string') {
+        return '';
+    }
+
+    const trimmed = value.trim();
+    return trimmed.replace(/^["']|["']$/g, '');
+}
+
+function parseRedisConnection(redisConnectionUrl) {
+    const normalized = normalizeEnv(redisConnectionUrl);
+    if (!normalized) {
+        return { restUrl: '', token: '' };
+    }
+
+    try {
+        const parsed = new URL(normalized);
+        const token = decodeURIComponent(parsed.password || parsed.username || '');
+        if (!parsed.hostname || !token) {
+            return { restUrl: '', token: '' };
+        }
+
+        return {
+            restUrl: `https://${parsed.hostname}`,
+            token,
+        };
+    } catch {
+        return { restUrl: '', token: '' };
+    }
+}
+
+function resolveRedisConfig() {
+    const kvRestUrl = normalizeEnv(process.env.KV_REST_API_URL);
+    const kvRestApiToken = normalizeEnv(process.env.KV_REST_API_TOKEN);
+    const kvReadOnlyToken = normalizeEnv(process.env.KV_REST_API_READ_ONLY_TOKEN);
+
+    const upstashRestUrl = normalizeEnv(process.env.UPSTASH_REDIS_REST_URL);
+    const upstashRestToken = normalizeEnv(process.env.UPSTASH_REDIS_REST_TOKEN);
+
+    const kvConnection = parseRedisConnection(process.env.KV_URL);
+    const redisConnection = parseRedisConnection(process.env.REDIS_URL);
+
+    const restUrl = kvRestUrl || upstashRestUrl || kvConnection.restUrl || redisConnection.restUrl;
+    const writeToken = kvRestApiToken || upstashRestToken || kvConnection.token || redisConnection.token;
+
+    return {
+        restUrl,
+        writeToken,
+        hasReadOnlyToken: Boolean(kvReadOnlyToken),
+    };
+}
+
+const redisConfig = resolveRedisConfig();
+const redis = redisConfig.restUrl && redisConfig.writeToken
     ? new Redis({
-        url: REDIS_REST_URL,
-        token: REDIS_REST_TOKEN,
+        url: redisConfig.restUrl,
+        token: redisConfig.writeToken,
     })
     : null;
 
@@ -86,8 +136,15 @@ export default async function handler(req, res) {
     }
 
     if (!redis) {
+        if (redisConfig.restUrl && redisConfig.hasReadOnlyToken) {
+            res.status(500).json({
+                error: 'Read-only Redis token detected. Set KV_REST_API_TOKEN (write token) for waitlist writes.',
+            });
+            return;
+        }
+
         res.status(500).json({
-            error: 'Redis is not configured. Add the Upstash Redis integration and environment variables.',
+            error: 'Redis is not configured. Set KV_REST_API_URL + KV_REST_API_TOKEN (or UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN).',
         });
         return;
     }
