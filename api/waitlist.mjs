@@ -3,9 +3,16 @@ import { Redis } from '@upstash/redis';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const MAX_BODY_SIZE = 1_000_000;
 const WAITLIST_KEY = process.env.WAITLIST_KEY || 'waitlist:entries';
-const HAS_REDIS_CONFIG = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+const HAS_REDIS_CONFIG = Boolean(REDIS_REST_URL && REDIS_REST_TOKEN);
 
-const redis = HAS_REDIS_CONFIG ? Redis.fromEnv() : null;
+const redis = HAS_REDIS_CONFIG
+    ? new Redis({
+        url: REDIS_REST_URL,
+        token: REDIS_REST_TOKEN,
+    })
+    : null;
 
 function applyCors(res) {
     res.setHeader('Access-Control-Allow-Origin', CORS_ORIGIN);
