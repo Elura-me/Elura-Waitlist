@@ -3,8 +3,8 @@ import { Redis } from '@upstash/redis';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 const MAX_BODY_SIZE = 1_000_000;
 const WAITLIST_KEY = process.env.WAITLIST_KEY || 'waitlist:entries';
-const REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
-const REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+const REDIS_REST_URL = process.env.KV_REST_API_URL;
+const REDIS_REST_TOKEN = process.env.KV_REST_API_TOKEN;
 const HAS_REDIS_CONFIG = Boolean(REDIS_REST_URL && REDIS_REST_TOKEN);
 
 const redis = HAS_REDIS_CONFIG
@@ -117,3 +117,4 @@ export default async function handler(req, res) {
         res.status(500).json({ error: message });
     }
 }
+

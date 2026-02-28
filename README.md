@@ -53,8 +53,8 @@ This repo is now set up for Vercel with:
 1. Import this repo into Vercel.
 2. Add the Upstash Redis integration from the Vercel Marketplace.
 3. Ensure these environment variables exist in Vercel:
-   - `UPSTASH_REDIS_REST_URL`
-   - `UPSTASH_REDIS_REST_TOKEN`
+   - `KV_REST_API_URL`
+   - `KV_REST_API_TOKEN`
    - `WAITLIST_KEY` (optional, defaults to `waitlist:entries`)
    - `CORS_ORIGIN` (optional, defaults to `*`)
 4. Deploy.
@@ -101,5 +101,6 @@ Expected response:
 
 ## Storage Note
 - Local `npm start` uses CSV file storage (`WAITLIST_FILE`).
-- Vercel deployment uses Redis storage via `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`.
+- Vercel deployment uses Redis storage via `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
 - Do not rely on local filesystem writes for Vercel production data.
+
